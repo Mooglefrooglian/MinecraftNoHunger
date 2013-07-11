@@ -11,12 +11,12 @@ import org.bukkit.scheduler.BukkitTask;
 public final class NoHunger extends JavaPlugin {
 	public void onEnable(){
 		getLogger().info("NoHunger onEnable has been invoked!");
+		PluginManager pm = this.getServer().getPluginManager();
+        NoHungerListener nhl = new NoHungerListener(this);
 	}
  
 	public void onDisable(){
 		getLogger().info("NoHunger onDisable has been invoked!");
-		PluginManager pm = this.getServer().getPluginManager();
-        pm.registerEvents(new NoHungerListener(this), this);  
 	}
 }
 
@@ -26,7 +26,9 @@ class NoHungerListener implements Listener {
  
     public NoHungerListener(NoHunger plugin) {
         this.plugin = plugin;
-        new NoHungerTask(this.plugin).runTaskLater(plugin, 20);
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        NoHungerTask nht = new NoHungerTask(this.plugin);
+        nht.runTask(plugin);
     }
 }
 
@@ -39,11 +41,12 @@ class NoHungerTask extends BukkitRunnable {
     }
  
     public void run() {
-    	this.runTaskLater(plugin,  20);
-    	
-    	Player[] onlinePlayerList = Bukkit.getServer().getOnlinePlayers();
-    	for (Player p : onlinePlayerList)
+    	Player[] onlinePlayerList = plugin.getServer().getOnlinePlayers();
+    	for (Player p : onlinePlayerList) {
     		p.setFoodLevel(20);
+    	}
+    	
+    	this.runTaskLater(plugin,  20);
     }
  
 }
