@@ -28,7 +28,7 @@ class NoHungerListener implements Listener {
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         NoHungerTask nht = new NoHungerTask(this.plugin);
-        nht.runTask(plugin);
+        nht.runTaskTimer(plugin, 0, 20);
     }
 }
 
@@ -45,8 +45,6 @@ class NoHungerTask extends BukkitRunnable {
     	for (Player p : onlinePlayerList) {
     		p.setFoodLevel(20);
     	}
-    	
-    	this.runTaskLater(plugin,  20);
     }
  
 }
